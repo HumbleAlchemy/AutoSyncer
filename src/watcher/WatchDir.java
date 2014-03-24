@@ -43,7 +43,7 @@ public class WatchDir {
 	 * DEV NOTE: make data.json file in /home/{user}/.config/autosyncer/
 	 */
 	private final static String CONFIG_FOLDER_LOCATION = System
-			.getProperty("user.dir") + File.separator + ".config" + File.separator + "autosyncer";
+			.getProperty("user.home") + File.separator + ".config" + File.separator + "autosyncer";
 	private final static String CONFIG_FILE_LOCATION = CONFIG_FOLDER_LOCATION
 			+ File.separator + "data.json";
 
