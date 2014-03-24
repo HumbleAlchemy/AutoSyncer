@@ -39,10 +39,13 @@ public class WatchDir {
 
 	private boolean trace = false;
 
+	/** 
+	 * DEV NOTE: make data.json file in /home/{user}/.config/autosyncer/
+	 */
 	private final static String CONFIG_FOLDER_LOCATION = System
-			.getProperty("user.dir") + File.separator + "config";
+			.getProperty("user.dir") + File.separator + ".config" + File.separator + "autosyncer";
 	private final static String CONFIG_FILE_LOCATION = CONFIG_FOLDER_LOCATION
-			+ File.separator + "config.json";
+			+ File.separator + "data.json";
 
 	@SuppressWarnings("unchecked")
 	private static <T> WatchEvent<T> cast(WatchEvent<?> event) {
@@ -205,6 +208,7 @@ public class WatchDir {
 	private void abhishek() {// TODO
 		// Read new entries from config file into hash map FileHashMap and
 		// FolderHashMap
+		
 		// Check difference between old and new hash map
 		// Create an AddList and DeleteList which are arrays of type Path
 		// AddList = List of Paths that are to be added to the watch service
