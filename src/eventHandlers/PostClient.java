@@ -1,87 +1,68 @@
 package eventHandlers;
+
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 public class PostClient {
 
-	// http://localhost:8080/RESTfulExample/json/product/post
-	public static void main(String[] args) {
-
+	public static void executeRequest(String url, String cloudDestinationPath,
+			String sourceFile) throws UnsupportedEncodingException, IOException {
+		File fileToUpload = new File(sourceFile);
+		String boundary = Long.toHexString(System.currentTimeMillis());
+		URLConnection connection = new URL(url).openConnection();
+		connection.setDoOutput(true); // This sets request method to POST.
+		connection.setRequestProperty("Content-Type",
+				"multipart/form-data; boundary=" + boundary);
+		PrintWriter writer = null;
 		try {
+			writer = new PrintWriter(new OutputStreamWriter(
+					connection.getOutputStream(), "UTF-8"));
 
-			URL url = new URL(
-					"http://localhost:8080/RESTfulExample/json/product/post");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "application/json");
+			writer.println("--" + boundary);
+			writer.println("Content-Disposition: form-data; name=\"cloudDestinationPath\"");
+			writer.println("Content-Type: text/plain; charset=UTF-8");
+			writer.println();
+			writer.println(cloudDestinationPath);
 
-			String input = "{\"qty\":100,\"name\":\"iPad 4\"}";
-
-			OutputStream os = conn.getOutputStream();
-			os.write(input.getBytes());
-			os.flush();
-
-			if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
+			writer.println("--" + boundary);
+			writer.println("Content-Disposition: form-data; name=\"file\"; filename=\""
+					+ fileToUpload.getName() + "\"");
+			writer.println("Content-Type: text/plain; charset=UTF-8");
+			writer.println();
+			BufferedReader reader = null;
+			try {
+				reader = new BufferedReader(new InputStreamReader(
+						new FileInputStream(fileToUpload), "UTF-8"));
+				for (String line; (line = reader.readLine()) != null;) {
+					writer.println(line);
+				}
+			} finally {
+				if (reader != null)
+					try {
+						reader.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 			}
 
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					(conn.getInputStream())));
-
-			String output;
-			System.out.println("Output from Server .... \n");
-			while ((output = br.readLine()) != null) {
-
-				System.out.println(output);
-			}
-
-			conn.disconnect();
-
-		} catch (MalformedURLException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
+			writer.println("--" + boundary + "--");
+		} finally {
+			if (writer != null)
+				writer.close();
 		}
 
-	}
-	public static String executeRequest(String uri)
-			throws MalformedURLException, IOException {
-
-		URL url = new URL(uri);
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod("GET");
-		conn.setRequestProperty("Accept", "application/json");
-
-		if (conn.getResponseCode() != 200) {
-			throw new RuntimeException("Failed : HTTP error code : "
-					+ conn.getResponseCode());
-		}
-		// Show output
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				(conn.getInputStream())));
-
-		String output;
-		System.out.println("Output from Server .... \n");
-		String response = "";
-		while ((output = br.readLine()) != null) {
-			response += output;
-			System.out.println(output);
-		}
-
-		conn.disconnect();
-		System.out.println("Response");
-		System.out.println(response);
-		return response;
+		// Connection is lazily executed whenever you request any status.
+		int responseCode = ((HttpURLConnection) connection).getResponseCode();
+		System.out.println(responseCode); // Should be 200
 
 	}
 

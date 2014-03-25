@@ -22,6 +22,8 @@ import java.util.Map;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import eventHandlers.EventHandler;
+
 /**
  * Example to watch a directory (or tree) for changes to files.
  */
@@ -146,7 +148,7 @@ public class WatchDir {
 				// print out event
 				// Handle event
 				System.out.format("%s: %s\n", event.kind().name(), child);
-				handleEvent(event);// TODO
+				EventHandler.handleEvent(event);// TODO
 			}
 
 			// reset key and remove from set if directory no longer accessible
@@ -180,9 +182,6 @@ public class WatchDir {
 		}
 	}
 
-	private void handleEvent(WatchEvent event) {
-
-	}
 	
 	// if directory is created, and watching recursively, then
 	// register it and its sub-directories
