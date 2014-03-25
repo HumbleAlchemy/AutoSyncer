@@ -39,5 +39,5 @@ public class Folders {
 	public void setFolder(String folder) {
 		this.folder = folder;
 	}
-
+	
 }

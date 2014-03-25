@@ -22,8 +22,10 @@ public class JSONUtilities {
 	 * function converts JSON to Map
 	 * @param JSONString : String
 	 * @return Map<String,ArrayList<String>>
+	 * @throws IOException 
 	 */
-	public static DataContent JsonToMap(String JSONString) {
+	public static DataContent JsonToMap() throws IOException {
+		String JSONString = readFile(CONFIG_FILE_LOCATION);
 		//Map<String,DataContent> myMap= new HashMap<String,DataContent>();
 		DataContent myMap = null;
 		ObjectMapper mapper = new ObjectMapper();
@@ -37,8 +39,6 @@ public class JSONUtilities {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
 		return myMap;
 	}
 	
@@ -61,11 +61,11 @@ public class JSONUtilities {
 	
 	 public static void main(String[] args) {
 		
-		String JSONString;
+		//String JSONString;
 		try {
-			JSONString = readFile(CONFIG_FILE_LOCATION);
-			System.out.println(JSONString);
-			DataContent myMap = JsonToMap(JSONString);
+			
+			//System.out.println(JSONString);
+			DataContent myMap = JsonToMap();
 			System.out.println("folder: " + ((Folders) myMap.getFolders().toArray()[0]).getFolder());
 		} catch (IOException e) {
 			e.printStackTrace();
