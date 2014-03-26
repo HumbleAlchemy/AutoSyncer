@@ -1,13 +1,12 @@
 package util;
 
-
 public class Folders {
-	
+
 	private String folder;
 	private String name;
 	private String user_cloud_name;
 	private String user_cloudID;
-	
+
 	public String getName() {
 		return name;
 	}
@@ -39,5 +38,5 @@ public class Folders {
 	public void setFolder(String folder) {
 		this.folder = folder;
 	}
-	
+
 }

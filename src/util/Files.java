@@ -1,5 +1,7 @@
 package util;
 
+import java.io.File;
+
 public class Files {
 	private String file;
 	private String parent;
@@ -37,6 +39,8 @@ public class Files {
 	public void setParent(String parent) {
 		this.parent = parent;
 	}
-	
+	public String getFullPath(){
+		return this.parent + File.separator + this.file;
+	}
 	
 }
